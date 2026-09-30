@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Focus Timer</title>
+  <meta name="description" content="Pomodoro, 52/17, 90/20, Flowtime, 20-20-20, Tabata and more. Productivity timers on one offline page.">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#16181f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="./" aria-label="Focus Timer">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true">
+        <circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="4"/>
+        <path d="M16 4.5a11.5 11.5 0 1 1-11.5 11.5" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
+        <path d="M16 16V9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <span data-i18n="app.name">Focus Timer</span>
+    </a>
+    <nav class="presets" id="presets" aria-label="Techniques"></nav>
+    <div class="top-actions">
+      <button class="icon-btn" id="btn-stats" data-i18n-title="btn.stats" aria-label="Statistics">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <button class="icon-btn" id="btn-settings" data-i18n-title="btn.settings" aria-label="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage" data-phase="focus" data-status="idle">
+    <div class="phase-label" id="phase-label">Focus</div>
+
+    <div class="ring" id="ring">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="ring-bg" cx="50" cy="50" r="46"/>
+        <circle class="ring-fg" id="ring-fg" cx="50" cy="50" r="46" pathLength="1"/>
+      </svg>
+      <div class="ring-inner">
+        <div class="time" id="time" aria-live="off">25:00</div>
+        <div class="sub" id="sub"></div>
+      </div>
+    </div>
+
+    <div class="dots" id="dots" aria-hidden="true"></div>
+
+    <div class="controls">
+      <button class="btn ghost" id="btn-reset" data-i18n-title="btn.reset" aria-label="Reset">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="btn primary" id="btn-main">Start</button>
+      <button class="btn ghost" id="btn-skip" data-i18n-title="btn.skip" aria-label="Skip">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l10 7-10 7zM19 5v14" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <p class="desc" id="desc"></p>
+    <p class="today" id="today"></p>
+  </main>
+
+  <footer class="foot">
+    <span class="hint" id="hint"></span>
+    <button class="link" id="btn-install" hidden data-i18n="install">Install as an app</button>
+  </footer>
+
+  <dialog id="dlg-settings" class="dlg">
+    <form method="dialog" class="dlg-body">
+      <header class="dlg-head">
+        <h2 data-i18n="settings.title">Settings</h2>
+        <button class="icon-btn" value="close" data-i18n-title="btn.close" aria-label="Close">✕</button>
+      </header>
+
+      <section>
+        <h3><span data-i18n="settings.preset">This technique</span> · <span id="settings-preset-name"></span></h3>
+        <div class="fields" id="preset-fields"></div>
+        <button type="button" class="link" id="btn-defaults" data-i18n="btn.defaults">Reset to defaults</button>
+      </section>
+
+      <section>
+        <h3 data-i18n="settings.general">General</h3>
+        <label class="row"><span data-i18n="s.autoBreak">Auto-start breaks</span><input type="checkbox" data-setting="autoBreak"></label>
+        <label class="row"><span data-i18n="s.autoFocus">Auto-start focus</span><input type="checkbox" data-setting="autoFocus"></label>
+        <label class="row"><span data-i18n="s.sound">Sound</span><input type="checkbox" data-setting="sound"></label>
+        <label class="row"><span data-i18n="s.volume">Volume</span><span class="inline"><input type="range" min="0" max="1" step="0.05" data-setting="volume"><button type="button" class="link" id="btn-test-sound" data-i18n="btn.test">Test</button></span></label>
+        <label class="row"><span data-i18n="s.tick">Ticking sound</span><input type="checkbox" data-setting="tick"></label>
+        <label class="row"><span data-i18n="s.notify">Desktop notification</span><input type="checkbox" data-setting="notify"></label>
+        <p class="note" id="notify-note" hidden data-i18n="s.notify.denied"></p>
+        <label class="row"><span data-i18n="s.title">Countdown in the tab title</span><input type="checkbox" data-setting="title"></label>
+        <label class="row"><span data-i18n="s.wake">Keep the screen awake while running</span><input type="checkbox" data-setting="wake"></label>
+        <label class="row"><span data-i18n="s.goal">Daily goal (sessions)</span><input type="number" min="0" max="50" step="1" data-setting="goal"></label>
+        <label class="row"><span data-i18n="s.theme">Theme</span>
+          <select data-setting="theme">
+            <option value="auto" data-i18n="s.theme.auto">System</option>
+            <option value="dark" data-i18n="s.theme.dark">Dark</option>
+            <option value="light" data-i18n="s.theme.light">Light</option>
+          </select></label>
+        <label class="row"><span data-i18n="s.lang">Language</span>
+          <select data-setting="lang">
+            <option value="en">English</option>
+            <option value="tr">Türkçe</option>
+          </select></label>
+      </section>
+
+      <section>
+        <h3 data-i18n="settings.data">Data</h3>
+        <div class="inline">
+          <button type="button" class="link" id="btn-export" data-i18n="btn.export">Export log</button>
+          <button type="button" class="link danger" id="btn-clear" data-i18n="btn.clear">Clear log</button>
+        </div>
+      </section>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-stats" class="dlg">
+    <form method="dialog" class="dlg-body" tabindex="-1" autofocus>
+      <header class="dlg-head">
+        <h2 data-i18n="stats.title">Statistics</h2>
+        <button class="icon-btn" value="close" data-i18n-title="btn.close" aria-label="Close">✕</button>
+      </header>
+      <div id="stats-body"></div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
