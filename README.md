@@ -107,8 +107,7 @@ current time as an argument, which is what makes it unit-testable and immune to 
 ## Credits
 
 Fonts are bundled as subsetted woff2 files under the SIL Open Font License 1.1: Share Tech Mono, Barlow Condensed,
-Righteous, IBM Plex Sans, Chakra Petch, Orbitron and Jost, all from Google Fonts. The ARC look is a fan homage to the
-visual language of Embark Studios' *ARC Raiders*; no assets from the game are used.
+Righteous, IBM Plex Sans, Chakra Petch, Orbitron and Jost, all from Google Fonts.
 
 ## License
 
