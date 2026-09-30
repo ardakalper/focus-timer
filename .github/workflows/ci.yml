@@ -32,7 +32,8 @@ jobs:
           retention-days: 7
 
   # Publishes app/ to GitHub Pages on every green push to main.
-  # One-time setup: repository Settings -> Pages -> Source: "GitHub Actions".
+  # configure-pages tries to enable Pages (source: GitHub Actions) on first run; if the token
+  # is not allowed to, do it once by hand: Settings -> Pages -> Source: "GitHub Actions".
   deploy:
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -46,6 +47,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: app
