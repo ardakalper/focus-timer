@@ -265,3 +265,13 @@ test('looks: ARC is the default, the setting switches and persists, ?skin previe
   await page.goto('/?nosw=1');
   await expect(page.locator('html')).not.toHaveAttribute('data-skin', /.+/);
 });
+
+test('opens in the dark theme regardless of the system setting', async ({ browser }) => {
+  const ctx = await browser.newContext({ colorScheme: 'light' });
+  const page = await ctx.newPage();
+  await page.goto('/?nosw=1');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  expect(bg).toBe('rgb(13, 10, 31)');
+  await ctx.close();
+});

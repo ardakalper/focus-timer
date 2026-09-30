@@ -21,10 +21,12 @@
     // Apply the saved look before first paint. ?skin=... previews one without saving it.
     try {
       var q = new URLSearchParams(location.search).get('skin');
-      var saved = JSON.parse(localStorage.getItem('ft:settings') || '{}').skin;
-      var skin = q || saved || 'arc';
+      var saved = JSON.parse(localStorage.getItem('ft:settings') || '{}');
+      var skin = q || saved.skin || 'arc';
       if (skin !== 'classic') document.documentElement.dataset.skin = skin;
-    } catch (e) { document.documentElement.dataset.skin = 'arc'; }
+      var theme = saved.theme || 'dark';
+      if (theme !== 'auto') document.documentElement.dataset.theme = theme;
+    } catch (e) { document.documentElement.dataset.skin = 'arc'; document.documentElement.dataset.theme = 'dark'; }
   </script>
 </head>
 <body>

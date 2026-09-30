@@ -8,7 +8,7 @@ import * as audio from './audio.js';
 
 const DEFAULT_SETTINGS = {
   lang: null, // null = detect
-  theme: 'auto',
+  theme: 'dark', // dark | light | auto (follow the system)
   skin: 'arc', // arc | cassette | atompunk | synthwave | classic
   autoBreak: true,
   autoFocus: false,
