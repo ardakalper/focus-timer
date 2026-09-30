@@ -1,7 +1,7 @@
 // UI controller: wires the pure engine to the DOM, storage, sound, notifications.
 import { Engine, FOCUS_KINDS, BREAK_KINDS, formatClock } from './engine.js';
 import { DEFAULT_PRESETS, FIELDS, applyOverrides, phaseLabelKey } from './presets.js';
-import { t, setLang, getLang, detectLang, LANGS } from './i18n.js';
+import { t, setLang, getLang, detectLang, LANGS, DICTS } from './i18n.js';
 import * as store from './store.js';
 import * as stats from './stats.js';
 import * as audio from './audio.js';
@@ -9,6 +9,7 @@ import * as audio from './audio.js';
 const DEFAULT_SETTINGS = {
   lang: null, // null = detect
   theme: 'auto',
+  skin: 'arc', // arc | cassette | atompunk | synthwave | classic
   autoBreak: true,
   autoFocus: false,
   sound: true,
@@ -162,6 +163,13 @@ function applyTheme() {
   else document.documentElement.dataset.theme = th;
 }
 
+const SKINS = ['arc', 'cassette', 'atompunk', 'synthwave', 'classic'];
+function applySkin() {
+  const sk = SKINS.includes(state.settings.skin) ? state.settings.skin : 'arc';
+  if (sk === 'classic') document.documentElement.removeAttribute('data-skin');
+  else document.documentElement.dataset.skin = sk;
+}
+
 function applyI18n() {
   document.querySelectorAll('[data-i18n]').forEach((n) => { n.textContent = t(n.dataset.i18n); });
   document.querySelectorAll('[data-i18n-title]').forEach((n) => { n.title = t(n.dataset.i18nTitle); n.setAttribute('aria-label', t(n.dataset.i18nTitle)); });
@@ -176,7 +184,10 @@ function renderPresets() {
     b.dataset.preset = p.id;
     b.setAttribute('aria-pressed', String(p.id === state.presetId));
     b.title = `${t(`preset.${p.id}.desc`)}${i < 9 ? `  [${i + 1}]` : ''}`;
-    b.innerHTML = `<span class="ico" aria-hidden="true">${p.icon}</span><span>${t(`preset.${p.id}`)}</span>`;
+    // English-only names (Pomodoro, Flowtime...) keep English casing rules even in Turkish UI (no dotted İ on uppercase).
+    const name = t(`preset.${p.id}`);
+    const lang = DICTS.en[`preset.${p.id}`] === DICTS.tr[`preset.${p.id}`] ? ' lang="en"' : '';
+    b.innerHTML = `<span class="ico" aria-hidden="true">${p.icon}</span><span${lang}>${name}</span>`;
     b.addEventListener('click', () => setPreset(p.id));
     return b;
   }));
@@ -225,6 +236,13 @@ function render() {
   const prog = e.progress(ts);
   el.ringFg.style.strokeDashoffset = prog == null ? (e.status === 'running' ? 0 : 1) : String(prog);
   if (prog == null && e.status === 'running') el.ringFg.style.strokeDashoffset = String(1 - ((ts / 1000) % 60) / 60);
+  // Level meters: remaining fraction of a countdown (drains like a tape), or the current hour for stopwatches;
+  // the second row is the seconds hand within the current minute.
+  const elapsedS = e.elapsedMs(ts) / 1000;
+  const meter = e.phase.kind === 'done' ? 0 : prog == null ? (elapsedS % 3600) / 3600 : 1 - prog;
+  const sec = e.status === 'running' || e.status === 'paused' ? (elapsedS % 60) / 60 : 0;
+  el.stage.style.setProperty('--meter', meter.toFixed(4));
+  el.stage.style.setProperty('--meter-sec', sec.toFixed(4));
 
   if (state.settings.title && e.status === 'running' && e.phase.kind !== 'done') {
     document.title = `${text} · ${t(phaseLabelKey(p, e.phase.kind))} — ${t('app.name')}`;
@@ -366,6 +384,7 @@ function bindSettings() {
       state.settings[key] = v;
       saveSettings();
       if (key === 'theme') applyTheme();
+      if (key === 'skin') applySkin();
       if (key === 'lang') { setLang(v); applyI18n(); renderPresets(); renderPresetFields(); }
       if (key === 'volume' || key === 'sound') { audio.unlock(); if (state.settings.sound && key === 'volume') audio.chime('beep', state.settings.volume); }
       if (key === 'wake') updateWakeLock();
@@ -492,6 +511,10 @@ function bindInstall() {
 function boot() {
   setLang(state.settings.lang && LANGS.includes(state.settings.lang) ? state.settings.lang : detectLang());
   applyTheme();
+  // A ?skin= preview wins over the saved setting for this page load only.
+  const previewSkin = new URLSearchParams(location.search).get('skin');
+  if (previewSkin && SKINS.includes(previewSkin)) state.settings.skin = previewSkin;
+  applySkin();
   rebuildPresets();
   if (!state.presets.some((p) => p.id === state.presetId)) state.presetId = 'pomodoro';
   state.engine = Engine.restore(preset(), store.load('engine', null));

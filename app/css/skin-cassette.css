@@ -1,0 +1,143 @@
+/* Skin: Nostromo Deck (cassette futurism). One instrument on a ship's desk: matte panel, recessed
+   glass readout, dial ticks, LED indicators, keycap switches. Light theme = beige Braun plastic + LCD. */
+:root[data-skin="cassette"] {
+  --bg: #0e100f; --bg-2: #171a18; --bg-3: #21251f; --fg: #ece7d8; --fg-2: #a8a496; --fg-3: #8a8878; --line: #2b2f2b;
+  --bezel-hi: #363b36; --bezel-lo: #040504; --glass: #0a0c0b; --glass-2: #131615; --ring-track: #1d211f; --led-off: #1b1f1c;
+  --accent: #ffb000; --danger: #ff6a5a; --shadow: 0 24px 60px rgba(0, 0, 0, .6); --radius: 10px;
+  --focus: #ffb000; --short: #4cf07a; --long: #3fd3ff; --work: #ff5c4d; --rest: #7bf2b2; --prep: #ffe24f; --done: #cfa6ff;
+  --ink: #1f241c; --scan: .16; --bloom: .38; --engrave: rgba(255, 255, 255, .06); --screw-a: #4a4f4a; --screw-b: #1a1d1a; --well: var(--glass);
+  --mono: "Share Tech Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --display: "Chakra Petch", "IBM Plex Sans", system-ui, sans-serif;
+  --font: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+:root[data-skin="cassette"][data-theme="light"] {
+  --bg: #dfd9c6; --bg-2: #ebe6d6; --bg-3: #d2cbb5; --fg: #26261f; --fg-2: #4f4d44; --fg-3: #5e5c54; --line: #b8b19b;
+  --bezel-hi: #f6f2e6; --bezel-lo: #9d9680; --glass: #cfd5bb; --glass-2: #c4cbb0; --ring-track: #bfb9a3; --led-off: #b3ac98;
+  --accent: #8f4400; --danger: #a3211a; --shadow: 0 18px 40px rgba(60, 50, 30, .25);
+  --focus: #8f4400; --short: #166030; --long: #0a5878; --work: #a3211a; --rest: #125d46; --prep: #705100; --done: #563a94;
+  --scan: 0; --bloom: 0; --engrave: rgba(255, 255, 255, .65); --screw-a: #fff8e8; --screw-b: #a09a86; --well: #efeadb;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-skin="cassette"]:not([data-theme="dark"]):not([data-theme="light"]) {
+    --bg: #dfd9c6; --bg-2: #ebe6d6; --bg-3: #d2cbb5; --fg: #26261f; --fg-2: #4f4d44; --fg-3: #5e5c54; --line: #b8b19b;
+    --bezel-hi: #f6f2e6; --bezel-lo: #9d9680; --glass: #cfd5bb; --glass-2: #c4cbb0; --ring-track: #bfb9a3; --led-off: #b3ac98;
+    --accent: #8f4400; --danger: #a3211a; --shadow: 0 18px 40px rgba(60, 50, 30, .25);
+    --focus: #8f4400; --short: #166030; --long: #0a5878; --work: #a3211a; --rest: #125d46; --prep: #705100; --done: #563a94;
+    --scan: 0; --bloom: 0; --engrave: rgba(255, 255, 255, .65); --screw-a: #fff8e8; --screw-b: #a09a86; --well: #efeadb;
+  }
+}
+
+:root[data-skin="cassette"] body {
+  font-family: var(--font);
+  background-color: var(--bg);
+  background-image: radial-gradient(140% 100% at 50% 0%, color-mix(in srgb, var(--phase) 9%, transparent), transparent 60%), radial-gradient(100% 80% at 50% 100%, rgba(0, 0, 0, .35), transparent 70%);
+}
+:root[data-skin="cassette"] .stage { animation: cs-power-on .5s ease-out 1; }
+@keyframes cs-power-on { from { opacity: 0; } }
+
+/* Header strip with a PWR LED */
+:root[data-skin="cassette"] .top { border-bottom: 1px solid var(--line); box-shadow: 0 1px 0 var(--bezel-hi); }
+:root[data-skin="cassette"] .brand span { font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: .14em; text-transform: uppercase; text-shadow: 0 1px 0 var(--engrave); }
+:root[data-skin="cassette"] .brand::after { content: ''; width: 6px; height: 6px; border-radius: 1px; margin-left: 4px; background: var(--led-off); box-shadow: inset 0 1px 1px rgba(0, 0, 0, .6); }
+:root[data-skin="cassette"] body:has(.stage[data-status="running"]) .brand::after { background: var(--phase); box-shadow: 0 0 6px var(--phase); }
+:root[data-skin="cassette"] body:has(.stage[data-status="paused"]) .brand::after { background: var(--phase); animation: cs-led-blink 2s steps(1) infinite; }
+@keyframes cs-led-blink { 50% { opacity: .25; } }
+:root[data-skin="cassette"] .chip {
+  border-radius: 5px; height: 30px; padding: 0 10px; font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .06em;
+  background: linear-gradient(var(--bg-3), var(--bg-2)); box-shadow: 0 2px 0 var(--bezel-lo), inset 0 1px 0 rgba(255, 255, 255, .07);
+}
+:root[data-skin="cassette"] .chip .ico { font-size: 12px; opacity: .9; }
+:root[data-skin="cassette"] .chip[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--phase) 16%, var(--bg-2)); color: var(--phase); border-color: color-mix(in srgb, var(--phase) 55%, var(--line));
+  box-shadow: 0 1px 0 var(--bezel-lo), inset 0 0 0 1px color-mix(in srgb, var(--phase) 30%, transparent); transform: translateY(1px);
+}
+:root[data-skin="cassette"] .icon-btn { width: 36px; height: 36px; border-radius: 5px; border: 1px solid transparent; }
+:root[data-skin="cassette"] .icon-btn:hover { border-color: var(--line); background: var(--bg-2); box-shadow: 0 1px 0 var(--bezel-lo); }
+
+/* Readout window */
+:root[data-skin="cassette"] .stage { gap: 26px; }
+:root[data-skin="cassette"] .phase-label {
+  font-family: var(--display); font-weight: 600; font-size: 14px; letter-spacing: .22em; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px;
+  background: var(--bg-2); box-shadow: inset 0 1px 0 var(--bezel-hi); text-shadow: 0 1px 0 var(--engrave);
+}
+:root[data-skin="cassette"] .ring::before {
+  content: ''; position: absolute; inset: -14px; border-radius: 26px; z-index: -1;
+  background: radial-gradient(120% 90% at 50% 0%, var(--glass-2), var(--glass) 70%);
+  box-shadow: inset 0 2px 0 var(--bezel-hi), inset 0 -2px 0 var(--bezel-lo), inset 0 0 0 1px var(--line), 0 1px 0 rgba(255, 255, 255, .04), 0 18px 40px rgba(0, 0, 0, .45);
+}
+:root[data-skin="cassette"][data-theme="light"] .ring::before { box-shadow: inset 0 2px 0 var(--bezel-lo), inset 0 -1px 0 var(--bezel-hi), inset 0 0 0 1px var(--line), 0 18px 40px rgba(60, 50, 30, .2); }
+:root[data-skin="cassette"] .ring-inner::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, var(--scan)) 0 1px, transparent 1px 3px);
+}
+:root[data-skin="cassette"] .ring-bg { stroke: var(--ring-track); stroke-width: 6; stroke-dasharray: 1 3.817; }
+:root[data-skin="cassette"] .ring-fg { stroke-width: 4; stroke-linecap: butt; }
+:root[data-skin="cassette"] .time {
+  font-family: var(--mono); font-weight: 400; font-size: clamp(48px, 14vw, 80px); letter-spacing: .02em; position: relative; color: var(--phase);
+  text-shadow: 0 0 1px var(--phase), 0 0 14px color-mix(in srgb, var(--phase) calc(var(--bloom) * 100%), transparent);
+  animation: none; transition: color .4s;
+}
+:root[data-skin="cassette"] .time.long { font-size: clamp(36px, 10vw, 58px); }
+:root[data-skin="cassette"][data-theme="light"] .time { color: var(--ink); text-shadow: 0 1px 0 rgba(255, 255, 255, .35); }
+@media (prefers-color-scheme: light) { :root[data-skin="cassette"]:not([data-theme="dark"]):not([data-theme="light"]) .time { color: var(--ink); text-shadow: 0 1px 0 rgba(255, 255, 255, .35); } }
+:root[data-skin="cassette"] .time::before { content: '88:88'; position: absolute; inset: 0; color: var(--phase); opacity: .07; pointer-events: none; text-shadow: none; }
+:root[data-skin="cassette"] .time.long::before { content: '8:88:88'; }
+:root[data-skin="cassette"] .stage[data-phase="done"] .time::before { content: ''; }
+:root[data-skin="cassette"] .stage[data-status="paused"] .time { opacity: .7; }
+:root[data-skin="cassette"] .sub { font-family: var(--mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+:root[data-skin="cassette"] .dots { gap: 10px; }
+:root[data-skin="cassette"] .dot { border-radius: 2px; background: var(--led-off); box-shadow: inset 0 1px 2px rgba(0, 0, 0, .6), 0 1px 0 rgba(255, 255, 255, .05); }
+:root[data-skin="cassette"] .dot.on { background: var(--phase); box-shadow: 0 0 6px color-mix(in srgb, var(--phase) 70%, transparent), inset 0 0 0 1px rgba(255, 255, 255, .25); }
+
+/* Keys */
+:root[data-skin="cassette"] .btn.primary {
+  border-radius: 8px; min-width: 160px; font-family: var(--display); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #0e100f;
+  background: linear-gradient(color-mix(in srgb, var(--phase) 85%, white), var(--phase));
+  box-shadow: 0 4px 0 color-mix(in srgb, var(--phase) 45%, black), 0 0 24px color-mix(in srgb, var(--phase) 22%, transparent);
+}
+:root[data-skin="cassette"] .btn.primary:hover { filter: brightness(1.04); }
+:root[data-skin="cassette"] .btn.primary:active { transform: translateY(3px); box-shadow: 0 1px 0 color-mix(in srgb, var(--phase) 45%, black); }
+:root[data-skin="cassette"] .btn.ghost {
+  width: 46px; height: 46px; border-radius: 8px; background: linear-gradient(var(--bg-3), var(--bg-2)); box-shadow: 0 2px 0 var(--bezel-lo), inset 0 1px 0 rgba(255, 255, 255, .07);
+}
+:root[data-skin="cassette"] .btn.ghost:active { transform: translateY(2px); box-shadow: 0 0 0 var(--bezel-lo); }
+:root[data-skin="cassette"] .btn:disabled { opacity: .35; box-shadow: none; }
+:root[data-skin="cassette"] .today { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+:root[data-skin="cassette"] .today b { color: var(--phase); }
+:root[data-skin="cassette"][data-theme="light"] .today b { color: var(--fg); }
+:root[data-skin="cassette"] .hint { font-family: var(--mono); letter-spacing: .04em; }
+:root[data-skin="cassette"] .link.danger { color: var(--danger); }
+
+/* Dialogs: plastic housing with screw heads, recessed input wells, mini readouts */
+:root[data-skin="cassette"] .dlg { border-radius: 12px; box-shadow: inset 0 1px 0 var(--bezel-hi), inset 0 -1px 0 var(--bezel-lo), var(--shadow); }
+:root[data-skin="cassette"] .dlg::backdrop { background: rgba(4, 5, 4, .7); }
+:root[data-skin="cassette"][data-theme="light"] .dlg::backdrop { background: rgba(50, 45, 30, .45); }
+:root[data-skin="cassette"] .dlg-head { border-bottom: 1px solid var(--line); }
+:root[data-skin="cassette"] .dlg h2 { font-family: var(--display); font-weight: 600; font-size: 16px; letter-spacing: .16em; text-transform: uppercase; text-shadow: 0 1px 0 var(--engrave); }
+:root[data-skin="cassette"] .dlg h3 { font-family: var(--display); letter-spacing: .2em; text-shadow: 0 1px 0 var(--engrave); display: flex; align-items: center; gap: 10px; }
+:root[data-skin="cassette"] .dlg h3::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+:root[data-skin="cassette"] .dlg-body { position: relative; }
+:root[data-skin="cassette"] .dlg-body::before, :root[data-skin="cassette"] .dlg-body::after {
+  content: ''; position: absolute; top: 12px; width: 8px; height: 8px; border-radius: 50%; z-index: 2;
+  background: radial-gradient(circle at 35% 35%, var(--screw-a), var(--screw-b)); box-shadow: inset 0 0 0 .5px rgba(0, 0, 0, .4);
+}
+:root[data-skin="cassette"] .dlg-body::before { left: 6px; }
+:root[data-skin="cassette"] .dlg-body::after { right: 6px; }
+@media (max-width: 360px) { :root[data-skin="cassette"] .dlg-body::before, :root[data-skin="cassette"] .dlg-body::after { display: none; } }
+:root[data-skin="cassette"] .row input[type="number"], :root[data-skin="cassette"] .row select {
+  background: var(--well); border-radius: 5px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, .45);
+}
+:root[data-skin="cassette"][data-theme="light"] .row input[type="number"], :root[data-skin="cassette"][data-theme="light"] .row select { box-shadow: inset 0 2px 4px rgba(0, 0, 0, .12); }
+:root[data-skin="cassette"] .row input[type="number"] { font-family: var(--mono); }
+:root[data-skin="cassette"] .row input[type="checkbox"], :root[data-skin="cassette"] .row input[type="range"] { accent-color: var(--phase); }
+:root[data-skin="cassette"] .note { color: var(--accent); }
+:root[data-skin="cassette"] .stat { background: var(--glass); border-radius: 8px; box-shadow: inset 0 2px 0 var(--bezel-hi), inset 0 -2px 0 var(--bezel-lo), inset 0 0 0 1px var(--line); }
+:root[data-skin="cassette"] .stat .v { font-family: var(--mono); font-size: 24px; font-weight: 400; color: var(--accent); text-shadow: 0 0 12px color-mix(in srgb, var(--accent) calc(var(--bloom) * 100%), transparent); }
+:root[data-skin="cassette"][data-theme="light"] .stat .v { color: var(--ink); text-shadow: none; }
+:root[data-skin="cassette"] .stat .k { font-family: var(--display); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .16em; text-shadow: 0 1px 0 var(--engrave); }
+:root[data-skin="cassette"] .bar .fill { border-radius: 2px; background: repeating-linear-gradient(0deg, var(--accent) 0 6px, transparent 6px 8px); opacity: 1; }
+:root[data-skin="cassette"] .bar .fill.empty { background: repeating-linear-gradient(0deg, var(--led-off) 0 6px, transparent 6px 8px); }
+:root[data-skin="cassette"] .bar .n { font-family: var(--mono); }
+:root[data-skin="cassette"] .bar div:last-child { font-family: var(--display); font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: .1em; }
+:root[data-skin="cassette"] .streak-line { font-family: var(--mono); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { :root[data-skin="cassette"] body:has(.stage[data-status="paused"]) .brand::after { opacity: .5; } }

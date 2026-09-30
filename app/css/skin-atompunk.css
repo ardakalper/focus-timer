@@ -1,0 +1,130 @@
+/* Skin: Atomic Dial (atompunk / raygun gothic). The master dial of a 1958 orbital console: chrome
+   bezel, 60 ticks, enamel nameplate, screen-printed hard shadows, starbursts. Light = cream enamel panel. */
+:root[data-skin="atompunk"] {
+  --bg: #0f1b2d; --bg-2: #16253b; --bg-3: #1f3049; --fg: #f3e9d2; --fg-2: #b9c0cf; --fg-3: #7c879c; --line: #2c3d57;
+  --ink: #0f1b2d; --cream: #f3e9d2; --teal: #4fd1c5; --coral: #ff6f61; --mustard: #f2c14e;
+  --chrome-hi: #e8eef5; --chrome-mid: #9aa7b8; --chrome-lo: #4b5a6b; --tick: #5b6a82; --tick-major: #f3e9d2;
+  --ring-track: #243652; --accent: #f2c14e; --shadow: 0 18px 50px rgba(0, 0, 0, .55); --hard-shadow-c: #06101d; --radius: 18px;
+  --focus: #ff6f61; --short: #4fd1c5; --long: #7aaeff; --work: #ff5c8a; --rest: #4fd1c5; --prep: #f2c14e; --done: #c3a6ff;
+  --plate-ink: var(--ink); --halftone: 9%; --blob: 14%; --dlg-border: var(--line); --bar-border: var(--line);
+  --display: "Righteous", "Futura", "Century Gothic", "Avenir Next", sans-serif;
+  --font: "Jost", "Futura", "Avenir Next", "Century Gothic", system-ui, sans-serif;
+}
+:root[data-skin="atompunk"][data-theme="light"] {
+  --bg: #f4ead6; --bg-2: #fbf5e8; --bg-3: #eadfc6; --fg: #1b2a44; --fg-2: #4a5670; --fg-3: #6b768c; --line: #d6c8ab;
+  --ink: #1b2a44; --cream: #fbf5e8; --teal: #147a70; --coral: #c9432f; --mustard: #9a6d00;
+  --chrome-hi: #ffffff; --chrome-mid: #c5cdd8; --chrome-lo: #7d8a9c; --tick: #b8aa8c; --tick-major: #1b2a44;
+  --ring-track: #e3d7bd; --accent: #c98a00; --shadow: 0 18px 40px rgba(27, 42, 68, .16); --hard-shadow-c: #1b2a44;
+  --focus: #c9432f; --short: #147a70; --long: #2a5fc4; --work: #b8305a; --rest: #147a70; --prep: #9a6d00; --done: #6a48b8;
+  --plate-ink: var(--cream); --halftone: 7%; --blob: 10%; --dlg-border: var(--ink); --bar-border: var(--ink);
+}
+@media (prefers-color-scheme: light) {
+  :root[data-skin="atompunk"]:not([data-theme="dark"]):not([data-theme="light"]) {
+    --bg: #f4ead6; --bg-2: #fbf5e8; --bg-3: #eadfc6; --fg: #1b2a44; --fg-2: #4a5670; --fg-3: #6b768c; --line: #d6c8ab;
+    --ink: #1b2a44; --cream: #fbf5e8; --teal: #147a70; --coral: #c9432f; --mustard: #9a6d00;
+    --chrome-hi: #ffffff; --chrome-mid: #c5cdd8; --chrome-lo: #7d8a9c; --tick: #b8aa8c; --tick-major: #1b2a44;
+    --ring-track: #e3d7bd; --accent: #c98a00; --shadow: 0 18px 40px rgba(27, 42, 68, .16); --hard-shadow-c: #1b2a44;
+    --focus: #c9432f; --short: #147a70; --long: #2a5fc4; --work: #b8305a; --rest: #147a70; --prep: #9a6d00; --done: #6a48b8;
+    --plate-ink: var(--cream); --halftone: 7%; --blob: 10%; --dlg-border: var(--ink); --bar-border: var(--ink);
+  }
+}
+
+:root[data-skin="atompunk"] body { font-family: var(--font); background-color: var(--bg); background-image: none; }
+/* Boomerang blob behind the stage + two static starbursts */
+:root[data-skin="atompunk"] body::before {
+  content: ''; position: fixed; z-index: -1; width: min(90vw, 720px); height: min(60vh, 480px); left: 50%; top: 48%;
+  transform: translate(-52%, -50%) rotate(-8deg); background: color-mix(in srgb, var(--phase) var(--blob), transparent);
+  border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%; pointer-events: none; transition: background-color .4s;
+}
+:root[data-skin="atompunk"] body::after, :root[data-skin="atompunk"] .stage::after {
+  content: ''; position: fixed; pointer-events: none; z-index: -1;
+  clip-path: polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%);
+}
+:root[data-skin="atompunk"] body::after { width: 120px; height: 120px; right: 8vw; top: 16vh; background: var(--mustard); opacity: .18; }
+:root[data-skin="atompunk"] .stage::after { width: 64px; height: 64px; left: 10vw; bottom: 14vh; background: var(--teal); opacity: .14; }
+@media (max-width: 600px) { :root[data-skin="atompunk"] body::after { display: none; } }
+
+/* Header */
+:root[data-skin="atompunk"] .top { border-bottom: 2px dashed var(--line); }
+:root[data-skin="atompunk"] .brand span { font-family: var(--display); font-size: 20px; font-weight: 400; letter-spacing: .02em; }
+:root[data-skin="atompunk"] .brand-mark { --accent: var(--coral); }
+:root[data-skin="atompunk"] .chip { font-weight: 500; border: 2px solid var(--line); padding: 5px 12px; }
+:root[data-skin="atompunk"] .chip:hover { border-color: var(--teal); }
+:root[data-skin="atompunk"] .chip[aria-pressed="true"] { background: var(--mustard); color: var(--ink); border-color: var(--ink); box-shadow: 2px 2px 0 var(--hard-shadow-c); transform: translate(-1px, -1px); }
+:root[data-skin="atompunk"][data-theme="light"] .chip[aria-pressed="true"] { background: #f2c14e; }
+:root[data-skin="atompunk"] .icon-btn { border-radius: 50%; border: 2px solid var(--line); background: var(--bg-2); }
+:root[data-skin="atompunk"] .icon-btn:hover { border-color: var(--teal); color: var(--fg); }
+
+/* Dial */
+:root[data-skin="atompunk"] .phase-label {
+  font-family: var(--display); font-weight: 400; font-size: 14px; letter-spacing: .18em; padding: 6px 16px 5px; border-radius: 999px;
+  background: var(--phase); color: var(--plate-ink); box-shadow: 3px 3px 0 var(--hard-shadow-c); position: relative; margin-bottom: 10px; transition: background-color .4s;
+}
+:root[data-skin="atompunk"] .phase-label::after {
+  content: ''; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 8px; transform: translateX(-50%);
+  background: var(--phase); clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+:root[data-skin="atompunk"] .ring { padding: 5px; border-radius: 50%; background: conic-gradient(from 200deg, var(--chrome-hi), var(--chrome-mid) 25%, var(--chrome-lo) 50%, var(--chrome-mid) 75%, var(--chrome-hi)); }
+:root[data-skin="atompunk"] .ring::before, :root[data-skin="atompunk"] .ring::after { content: ''; position: absolute; border-radius: 50%; pointer-events: none; }
+:root[data-skin="atompunk"] .ring::before {
+  inset: -14px; background: repeating-conic-gradient(from -90deg, var(--tick) 0deg .7deg, transparent .7deg 6deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 10px), #000 calc(100% - 9px), #000 100%);
+  mask: radial-gradient(circle closest-side, transparent calc(100% - 10px), #000 calc(100% - 9px), #000 100%);
+}
+:root[data-skin="atompunk"] .ring::after {
+  inset: -18px; background: repeating-conic-gradient(from -90.6deg, var(--tick-major) 0deg 1.2deg, transparent 1.2deg 90deg);
+  -webkit-mask: radial-gradient(circle closest-side, transparent calc(100% - 14px), #000 calc(100% - 13px), #000 100%);
+  mask: radial-gradient(circle closest-side, transparent calc(100% - 14px), #000 calc(100% - 13px), #000 100%);
+}
+@media (max-width: 420px) { :root[data-skin="atompunk"] .ring::before { inset: -10px; } :root[data-skin="atompunk"] .ring::after { inset: -13px; } }
+:root[data-skin="atompunk"] .ring svg { border-radius: 50%; background: var(--bg-2); box-shadow: 0 0 0 3px var(--chrome-mid), 0 0 0 4px var(--chrome-lo), inset 0 0 0 1px var(--chrome-hi), inset 0 2px 6px rgba(0, 0, 0, .35); }
+:root[data-skin="atompunk"] .ring-bg, :root[data-skin="atompunk"] .ring-fg { stroke-width: 4; }
+:root[data-skin="atompunk"] .time { font-family: var(--font); font-weight: 500; font-size: clamp(48px, 14vw, 80px); letter-spacing: .01em; font-feature-settings: "tnum" 1; animation: none; }
+:root[data-skin="atompunk"] .time.long { font-size: clamp(36px, 10vw, 58px); }
+:root[data-skin="atompunk"] .stage[data-status="paused"] .time { color: var(--fg-2); }
+:root[data-skin="atompunk"] .sub { letter-spacing: .04em; }
+:root[data-skin="atompunk"] .dots { gap: 12px; }
+:root[data-skin="atompunk"] .dot { background: var(--ring-track); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--line); }
+:root[data-skin="atompunk"] .dot.on { background: var(--phase); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--phase); }
+:root[data-skin="atompunk"] .btn.primary {
+  height: 54px; min-width: 160px; font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: .08em; color: var(--plate-ink);
+  background: var(--phase); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--hard-shadow-c); transition: transform .12s, box-shadow .12s, background-color .4s;
+}
+:root[data-skin="atompunk"] .btn.primary:hover { filter: none; transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--hard-shadow-c); }
+:root[data-skin="atompunk"] .btn.primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--hard-shadow-c); }
+:root[data-skin="atompunk"] .btn.ghost { border: 2px solid var(--line); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08); }
+:root[data-skin="atompunk"][data-theme="light"] .btn.ghost { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4); }
+:root[data-skin="atompunk"] .btn.ghost:hover { border-color: var(--teal); }
+:root[data-skin="atompunk"] .desc { font-size: 15px; }
+:root[data-skin="atompunk"] .today b { color: var(--mustard); }
+:root[data-skin="atompunk"] .foot { border-top: 2px dashed var(--line); }
+:root[data-skin="atompunk"] .link { text-decoration-color: var(--teal); }
+:root[data-skin="atompunk"] .link.danger { color: var(--coral); }
+
+/* Dialogs: printed card with a halftone, teal stripe, dashed rows */
+:root[data-skin="atompunk"] .dlg { border: 2px solid var(--dlg-border); border-top: 3px solid var(--teal); box-shadow: 6px 6px 0 var(--hard-shadow-c), var(--shadow); }
+:root[data-skin="atompunk"] .dlg::backdrop { background: rgba(3, 8, 16, .7); backdrop-filter: none; }
+:root[data-skin="atompunk"][data-theme="light"] .dlg::backdrop { background: rgba(15, 27, 45, .6); }
+:root[data-skin="atompunk"] .dlg-body { position: relative; }
+:root[data-skin="atompunk"] .dlg-body::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background-image: radial-gradient(color-mix(in srgb, var(--fg) var(--halftone), transparent) 1px, transparent 1.2px); background-size: 6px 6px;
+}
+:root[data-skin="atompunk"] .dlg-body > * { position: relative; z-index: 1; }
+:root[data-skin="atompunk"] .dlg h2 { font-family: var(--display); font-weight: 400; font-size: 20px; }
+:root[data-skin="atompunk"] .dlg h3 { letter-spacing: .14em; }
+:root[data-skin="atompunk"] .row { border-bottom: 1px dashed var(--line); }
+:root[data-skin="atompunk"] .row input[type="number"], :root[data-skin="atompunk"] .row select { border: 2px solid var(--line); border-radius: 10px; }
+:root[data-skin="atompunk"] .row input:focus-visible, :root[data-skin="atompunk"] .row select:focus-visible { outline: none; border-color: var(--teal); }
+:root[data-skin="atompunk"] .row input[type="checkbox"], :root[data-skin="atompunk"] .row input[type="range"] { accent-color: var(--teal); }
+:root[data-skin="atompunk"] .note { color: var(--mustard); }
+:root[data-skin="atompunk"] .stat { border: 2px solid var(--line); border-radius: 14px; box-shadow: 2px 2px 0 var(--line); }
+:root[data-skin="atompunk"] .stat .v { font-family: var(--display); font-weight: 400; font-size: 24px; }
+:root[data-skin="atompunk"] .stat .k { text-transform: uppercase; letter-spacing: .1em; }
+:root[data-skin="atompunk"] .bar .fill { background: var(--mustard); border: 2px solid var(--bar-border); border-radius: 6px 6px 2px 2px; opacity: 1; }
+:root[data-skin="atompunk"] .bar:last-child .fill:not(.empty) { background: var(--focus); }
+:root[data-skin="atompunk"] .bar .fill.empty { background: repeating-linear-gradient(45deg, var(--ring-track) 0 3px, transparent 3px 6px); border-color: color-mix(in srgb, var(--bar-border) 50%, transparent); }
+:root[data-skin="atompunk"] .bar .n { font-feature-settings: "tnum" 1; }
+:root[data-skin="atompunk"] .streak-line { font-size: 13px; }
+:root[data-skin="atompunk"] .stage[data-phase="done"] body::after { animation: ap-pop .6s ease-out 1; }
+@keyframes ap-pop { from { transform: scale(.9); } }

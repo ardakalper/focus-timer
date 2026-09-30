@@ -239,3 +239,29 @@ test('has no console errors and a valid manifest', async ({ page, request }) => 
   expect(m.icons.length).toBeGreaterThanOrEqual(2);
   for (const icon of m.icons) expect((await request.get('/' + icon.src)).ok()).toBe(true);
 });
+
+test('looks: ARC is the default, the setting switches and persists, ?skin previews without saving', async ({ page }) => {
+  await expect(page.locator('html')).toHaveAttribute('data-skin', 'arc');
+  await expect(page.locator('#meter')).toBeVisible();
+  await page.locator('#btn-settings').click();
+  const select = page.locator('select[data-setting="skin"]');
+  await expect(select).toHaveValue('arc');
+  await select.selectOption('cassette');
+  await expect(page.locator('html')).toHaveAttribute('data-skin', 'cassette');
+  await page.locator('#dlg-settings button[value="close"]').click();
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-skin', 'cassette');
+  await expect(page.locator('#meter')).toBeHidden();
+  // classic removes the attribute
+  await page.locator('#btn-settings').click();
+  await select.selectOption('classic');
+  await expect(page.locator('html')).not.toHaveAttribute('data-skin', /.+/);
+  await page.locator('#dlg-settings button[value="close"]').click();
+  await page.reload();
+  await expect(page.locator('html')).not.toHaveAttribute('data-skin', /.+/);
+  // preview via query string does not overwrite the saved setting
+  await page.goto('/?nosw=1&skin=synthwave');
+  await expect(page.locator('html')).toHaveAttribute('data-skin', 'synthwave');
+  await page.goto('/?nosw=1');
+  await expect(page.locator('html')).not.toHaveAttribute('data-skin', /.+/);
+});

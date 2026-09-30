@@ -1,6 +1,6 @@
 {
   "name": "focus-timer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Pomodoro, 52/17, 90/20, Flowtime, 20-20-20, Tabata and more. Productivity timers on one offline page.",
   "private": true,
   "type": "module",

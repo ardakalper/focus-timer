@@ -1,8 +1,12 @@
 // App-shell cache. Bump VERSION on every release so clients pick up new files.
-const VERSION = 'v1.0.0';
+const VERSION = 'v1.1.0';
 const CACHE = `focus-timer-${VERSION}`;
 const SHELL = [
-  './', './index.html', './manifest.webmanifest', './css/app.css',
+  './', './index.html', './manifest.webmanifest', './css/fonts.css', './css/app.css',
+  './css/skin-arc.css', './css/skin-cassette.css', './css/skin-atompunk.css', './css/skin-synthwave.css',
+  './fonts/share-tech-mono.woff2', './fonts/barlow-condensed-500.woff2', './fonts/barlow-condensed-600.woff2',
+  './fonts/righteous.woff2', './fonts/ibm-plex-sans-400.woff2', './fonts/ibm-plex-sans-600.woff2',
+  './fonts/chakra-petch-500.woff2', './fonts/chakra-petch-600.woff2', './fonts/orbitron.woff2', './fonts/jost.woff2',
   './js/main.js', './js/engine.js', './js/presets.js', './js/i18n.js', './js/store.js', './js/stats.js', './js/audio.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png',
 ];

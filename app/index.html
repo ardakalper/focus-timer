@@ -6,12 +6,26 @@
   <title>Focus Timer</title>
   <meta name="description" content="Pomodoro, 52/17, 90/20, Flowtime, 20-20-20, Tabata and more. Productivity timers on one offline page.">
   <meta name="color-scheme" content="dark light">
-  <meta name="theme-color" content="#16181f" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0d0a1f" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#efe9dc" media="(prefers-color-scheme: light)">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/skin-synthwave.css">
+  <link rel="stylesheet" href="css/skin-cassette.css">
+  <link rel="stylesheet" href="css/skin-atompunk.css">
+  <link rel="stylesheet" href="css/skin-arc.css">
+  <script>
+    // Apply the saved look before first paint. ?skin=... previews one without saving it.
+    try {
+      var q = new URLSearchParams(location.search).get('skin');
+      var saved = JSON.parse(localStorage.getItem('ft:settings') || '{}').skin;
+      var skin = q || saved || 'arc';
+      if (skin !== 'classic') document.documentElement.dataset.skin = skin;
+    } catch (e) { document.documentElement.dataset.skin = 'arc'; }
+  </script>
 </head>
 <body>
   <header class="top">
@@ -21,7 +35,7 @@
         <path d="M16 4.5a11.5 11.5 0 1 1-11.5 11.5" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round"/>
         <path d="M16 16V9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
-      <span data-i18n="app.name">Focus Timer</span>
+      <span data-i18n="app.name" lang="en">Focus Timer</span>
     </a>
     <nav class="presets" id="presets" aria-label="Techniques"></nav>
     <div class="top-actions">
@@ -48,6 +62,11 @@
       </div>
     </div>
 
+    <!-- Striped level meters (used by display-style skins; hidden elsewhere). Driven by --meter / --meter-sec on #stage. -->
+    <div class="meter" id="meter" aria-hidden="true">
+      <div class="meter-row"><span class="meter-tag">TIME</span><div class="meter-bar"><div class="meter-fill"></div></div></div>
+      <div class="meter-row"><span class="meter-tag">SEC</span><div class="meter-bar sec"><div class="meter-fill"></div></div></div>
+    </div>
     <div class="dots" id="dots" aria-hidden="true"></div>
 
     <div class="controls">
@@ -94,6 +113,14 @@
         <label class="row"><span data-i18n="s.title">Countdown in the tab title</span><input type="checkbox" data-setting="title"></label>
         <label class="row"><span data-i18n="s.wake">Keep the screen awake while running</span><input type="checkbox" data-setting="wake"></label>
         <label class="row"><span data-i18n="s.goal">Daily goal (sessions)</span><input type="number" min="0" max="50" step="1" data-setting="goal"></label>
+        <label class="row"><span data-i18n="s.skin">Look</span>
+          <select data-setting="skin">
+            <option value="arc" data-i18n="skin.arc">ARC</option>
+            <option value="cassette" data-i18n="skin.cassette">Nostromo Deck</option>
+            <option value="atompunk" data-i18n="skin.atompunk">Atomic Dial</option>
+            <option value="synthwave" data-i18n="skin.synthwave">Horizon Drive</option>
+            <option value="classic" data-i18n="skin.classic">Classic</option>
+          </select></label>
         <label class="row"><span data-i18n="s.theme">Theme</span>
           <select data-setting="theme">
             <option value="auto" data-i18n="s.theme.auto">System</option>

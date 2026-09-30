@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/img/dark.png" alt="Focus Timer: a Pomodoro session running in the dark theme" width="800">
+  <img src="docs/img/dark.png" alt="Focus Timer: a Pomodoro session running, ARC look, dark theme" width="800">
 </p>
 
 **Live:** https://ardakalper.github.io/focus-timer/
@@ -44,12 +44,16 @@ Every number is editable per technique and remembered. "Reset to defaults" bring
 - **Desktop notifications**, countdown in the tab title, and a screen wake lock while running.
 - **Daily goal, today's total, streak** and a 7-day chart. Sessions are logged locally; export as JSON any time.
 - **Keyboard first:** `Space` start/pause · `N` skip or finish · `R` reset · `1`–`9` pick a technique · `S` settings · `I` stats.
-- **Dark and light themes**, English and Turkish, phone-friendly layout.
+- **Five looks.** The default, *ARC*, turns the whole page into a retro-futuristic display: deep indigo glass, a
+  five-colour ribbon sweeping in from the corner, striped level meters instead of a dial, numbered program keys and a
+  REC light. *Nostromo Deck* (cassette-futurism instrument panel), *Atomic Dial* (1950s atompunk), *Horizon Drive*
+  (synthwave) and *Classic* are one click away in Settings. Every look has a dark and a light theme.
+- English and Turkish, phone-friendly layout.
 - **PWA:** installs from the browser, runs offline through a service worker. No build step, no framework, no
   dependencies at runtime: plain HTML, CSS and ES modules.
 
 <p align="center">
-  <img src="docs/img/light-tr.png" alt="Light theme, Turkish UI, 52/17 running" width="49%">
+  <img src="docs/img/light-tr.png" alt="ARC look, light theme, Turkish UI, 52/17 running" width="49%">
   <img src="docs/img/stats.png" alt="Statistics dialog with a 7-day chart" width="49%">
 </p>
 
@@ -81,7 +85,9 @@ CI runs both suites on every push and deploys `app/` to GitHub Pages when `main`
 ```
 app/
   index.html          the whole UI
-  css/app.css         tokens (dark/light), layout, dialogs
+  css/app.css         base tokens (dark/light), layout, dialogs
+  css/skin-*.css      the looks: each one overrides tokens and restyles components under [data-skin]
+  css/fonts.css       @font-face for the bundled OFL fonts (only the families a look uses get downloaded)
   js/engine.js        pure timer state machine: presets -> phases, wall-clock timing, snapshot/restore
   js/presets.js       the techniques, their editable fields and bounds
   js/main.js          DOM controller: rendering, settings, stats, sound, notifications, keyboard, PWA
@@ -98,6 +104,12 @@ Every technique compiles to the same model: a sequence of phases (`focus`, `shor
 `prep`, `done`), a round counter and one rule for "what comes next". `engine.js` has no DOM access and takes the
 current time as an argument, which is what makes it unit-testable and immune to background-tab throttling.
 
+## Credits
+
+Fonts are bundled as subsetted woff2 files under the SIL Open Font License 1.1: Share Tech Mono, Barlow Condensed,
+Righteous, IBM Plex Sans, Chakra Petch, Orbitron and Jost, all from Google Fonts. The ARC look is a fan homage to the
+visual language of Embark Studios' *ARC Raiders*; no assets from the game are used.
+
 ## License
 
 MIT.
@@ -110,5 +122,7 @@ MIT.
 Third Time, 20-20-20, Zaman Kutusu, Kronometre ve Tabata; artı kendi döngünü kurduğun Özel teknik. Hesap yok,
 sunucu yok, çevrimdışı çalışır, tarayıcıdan uygulama olarak kurulur. Süreler her teknik için ayrı ayrı
 düzenlenir; molaları ve odağı otomatik başlatma, ses, bildirim, sekme başlığında geri sayım, günlük hedef, seri
-ve 7 günlük grafik var. Arka planda, uyuyan bilgisayarda ya da sayfa yenilenince zaman şaşmaz. Klavye: `Boşluk`
+ve 7 günlük grafik var. Varsayılan görünüm *ARC*: indigo ekran, köşeden gelen beş renkli kurdele, halka yerine
+şeritli seviye göstergeleri. Ayarlardan dört başka görünüm seçilir. Arka planda, uyuyan bilgisayarda ya da sayfa
+yenilenince zaman şaşmaz. Klavye: `Boşluk`
 başlat/duraklat, `N` geç, `R` sıfırla, `1`–`9` teknik seç, `S` ayarlar, `I` istatistik.

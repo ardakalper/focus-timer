@@ -150,6 +150,7 @@ body:has(.stage[data-phase="done"]) { --phase: var(--done); }
 .stage[data-status="paused"] .time { animation: blink 1.6s ease-in-out infinite; }
 @keyframes blink { 50% { opacity: .45; } }
 
+.meter { display: none; }
 .dots { display: flex; gap: 8px; min-height: 10px; }
 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ring-track); }
 .dot.on { background: var(--phase); }

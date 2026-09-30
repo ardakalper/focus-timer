@@ -1,5 +1,7 @@
-// Generates PNG app icons without any dependency: draws a ring + wedge into an RGBA
-// buffer and encodes it as PNG with node:zlib. Run: node tools/make-icons.mjs
+// Generates PNG app icons without any dependency: draws into an RGBA buffer and encodes it as
+// PNG with node:zlib. Run: node tools/make-icons.mjs
+// Icon: indigo rounded square, the five-colour ribbon sweeping across as a wide arc, and a cream
+// timer ring with a hand on top (its inside is filled so the digits' colours never clash).
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 
@@ -20,14 +22,21 @@ const chunk = (type, data) => {
   return Buffer.concat([len, td, crc]);
 };
 
+// 4x supersampling for smooth edges
 function png(size, paint) {
+  const SS = 4;
   const raw = Buffer.alloc((size * 4 + 1) * size);
   for (let y = 0; y < size; y++) {
-    raw[y * (size * 4 + 1)] = 0; // filter: none
+    raw[y * (size * 4 + 1)] = 0;
     for (let x = 0; x < size; x++) {
-      const [r, g, b, a] = paint(x + 0.5, y + 0.5, size);
+      let r = 0, g = 0, b = 0, a = 0;
+      for (let sy = 0; sy < SS; sy++) for (let sx = 0; sx < SS; sx++) {
+        const [pr, pg, pb, pa] = paint(x + (sx + 0.5) / SS, y + (sy + 0.5) / SS, size);
+        r += pr * pa; g += pg * pa; b += pb * pa; a += pa;
+      }
       const i = y * (size * 4 + 1) + 1 + x * 4;
-      raw[i] = r; raw[i + 1] = g; raw[i + 2] = b; raw[i + 3] = a;
+      const n = SS * SS;
+      raw[i] = a ? Math.round(r / a) : 0; raw[i + 1] = a ? Math.round(g / a) : 0; raw[i + 2] = a ? Math.round(b / a) : 0; raw[i + 3] = Math.round(a / n);
     }
   }
   const ihdr = Buffer.alloc(13);
@@ -39,34 +48,45 @@ function png(size, paint) {
   ]);
 }
 
-// Icon: rounded dark square, thick accent ring, 3/4 filled wedge (a timer at 15:00 left).
-const BG = [22, 24, 33], RING = [58, 62, 80], ACC = [255, 122, 69], WHITE = [240, 240, 245];
-function paint(x, y, s) {
-  const c = s / 2, r = s * 0.44, rad = s * 0.22;
-  // rounded square mask
-  const dx = Math.max(Math.abs(x - c) - (c - rad), 0), dy = Math.max(Math.abs(y - c) - (c - rad), 0);
-  if (Math.hypot(dx, dy) > rad) return [0, 0, 0, 0];
-  const d = Math.hypot(x - c, y - c);
-  const ring = s * 0.36, w = s * 0.075;
-  let ang = Math.atan2(y - c, x - c) + Math.PI / 2; // 0 at 12 o'clock
-  if (ang < 0) ang += Math.PI * 2;
-  const inRing = Math.abs(d - ring) <= w;
-  if (inRing) return [...(ang <= Math.PI * 1.5 ? ACC : RING), 255];
-  // hand from centre to 12 o'clock
-  if (Math.abs(x - c) < s * 0.03 && y < c && y > c - ring * 0.7) return [...WHITE, 255];
-  if (d < s * 0.045) return [...WHITE, 255];
-  return [...BG, 255];
+const BG = [13, 10, 31], CREAM = [242, 237, 226];
+const STRIPES = [[67, 217, 232], [67, 201, 79], [242, 195, 39], [240, 115, 28], [220, 43, 31]];
+
+function paint(x, y, s, { bleed = false } = {}) {
+  const c = s / 2, rad = s * 0.22;
+  if (!bleed) {
+    const dx = Math.max(Math.abs(x - c) - (c - rad), 0), dy = Math.max(Math.abs(y - c) - (c - rad), 0);
+    if (Math.hypot(dx, dy) > rad) return [0, 0, 0, 0];
+  }
+  // ribbon: concentric arcs around a centre off the bottom-right corner
+  const cx = s * 1.18, cy = s * 1.18;
+  const d = Math.hypot(x - cx, y - cy);
+  const w = s * 0.075, r0 = s * 0.78;
+  const band = Math.floor((d - r0) / w);
+  let col = BG;
+  if (band >= 0 && band < 5) col = STRIPES[4 - band]; // red innermost, cyan outermost
+  // timer ring with a filled inside
+  const dc = Math.hypot(x - c, y - c);
+  const ring = s * 0.25, rw = s * 0.055;
+  if (dc < ring + rw) {
+    if (Math.abs(dc - ring) <= rw) {
+      let ang = Math.atan2(y - c, x - c) + Math.PI / 2;
+      if (ang < 0) ang += Math.PI * 2;
+      return [...(ang <= Math.PI * 1.5 ? CREAM : [58, 52, 96]), 255];
+    }
+    if (Math.abs(x - c) < s * 0.028 && y < c - s * 0.02 && y > c - ring * 0.72) return [...CREAM, 255];
+    if (dc < s * 0.04) return [...CREAM, 255];
+    return [...BG, 255];
+  }
+  return [...col, 255];
 }
 
 mkdirSync(new URL('../app/icons/', import.meta.url), { recursive: true });
 for (const size of [192, 512]) {
   writeFileSync(new URL(`../app/icons/icon-${size}.png`, import.meta.url), png(size, paint));
 }
-// maskable variant: same drawing but on a full-bleed background (safe zone = inner 80%)
-for (const size of [512]) {
-  writeFileSync(new URL(`../app/icons/maskable-${size}.png`, import.meta.url), png(size, (x, y, s) => {
-    const p = paint(s * 0.1 + x * 0.8, s * 0.1 + y * 0.8, s);
-    return p[3] === 0 ? [...BG, 255] : p;
-  }));
-}
+// maskable: full-bleed background, artwork scaled into the inner 80% safe zone
+writeFileSync(new URL('../app/icons/maskable-512.png', import.meta.url), png(512, (x, y, s) => {
+  const p = paint((x - s * 0.1) / 0.8, (y - s * 0.1) / 0.8, s, { bleed: true });
+  return p;
+}));
 console.log('icons written');
